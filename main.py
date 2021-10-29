@@ -53,8 +53,8 @@ class Parts:
 
         if self.x <= 0:
             self.x = 0
-        elif self.x + self.width >= DISPLAY_HEIGHT:
-            self.x = DISPLAY_HEIGHT - self.width
+        elif self.x + self.width >= DISPLAY_WIDTH:
+            self.x = DISPLAY_WIDTH - self.width
 
     def send_bubble(self):
 
@@ -71,9 +71,10 @@ class Parts:
                 (self.y < other.y + other.width + 20 < self.y + self.width + 20 or \
                  self.y <= other.y + other.width + 20 <= self.y + self.width + 20):
             counter += 1
+            print(counter)
             self.color = random.choice(COLORS)
-        if counter == 3:
-            return True
+            if counter == 1:
+                return True
 
 
 
@@ -103,14 +104,17 @@ player = Parts(screen, x_loc, y_loc, player_width, ORANGE)
 running = True
 while running:
 
-    pos = pygame.mouse.get_pos()
-    player.x = pos[0] - .5 * player.width
-    player.y = pos[1] - .5 * player.width
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_RIGHT:
+            player.speed = 5
+        elif event.key == pygame.K_LEFT:
+            player.speed = -5
+    elif event.type == pygame.KEYUP:
+        player.speed = 0
 
     screen.fill(BLUE)
 
@@ -119,6 +123,7 @@ while running:
         bubble.send_bubble()
         if player.is_collided(bubble):
             running = False
+
 
     player.draw_fish()
     player.update()
